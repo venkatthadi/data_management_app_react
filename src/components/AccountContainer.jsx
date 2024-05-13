@@ -12,7 +12,7 @@ export function AccountContainer() {
             <div>
                 <h2>Account Container</h2>
             </div>
-            <div>Display name: {accountContextData.name}</div>
+            <div>Name: {accountContextData.name}</div>
             <div>Account ID: {accountContextData.id}</div>
             <AccountContent />
         </div>

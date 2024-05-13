@@ -6,17 +6,19 @@ import { AccountContainer } from "./components/AccountContainer";
 
 export default function App() {
 
-    useFetchAccounts(1);
+    const { account, loading, errors } = useFetchAccounts(1);
+    // console.log(account, loading, errors);
 
-    const [accounts, setAccounts] = useState({
-        id: 1,
-        name: "Venkat",
-    });
+    const [accounts, setAccounts] = useState();
+
+    useEffect(() => {
+        if(!loading && !errors && account) setAccounts(account);
+    }, [loading, errors, account]);
 
     return(
         <AccountContext.Provider value={{ ...accounts, setAccounts }}>
             <div>
-                <AccountContainer />
+                {loading ? "loading..." : <AccountContainer />}
             </div>
         </AccountContext.Provider>
     );
