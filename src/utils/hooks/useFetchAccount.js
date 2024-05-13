@@ -22,11 +22,17 @@ export function useFetchAccounts(accountId) {
         .catch((err) => {
             setErrors(err);
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+            setTimeout(() => {
+                setLoading(false)
+            }, 2000);
+        });
 
         return () => {
             controller.abort();
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false)
+            }, 2000);
         };
     }, [accountId]);
 
