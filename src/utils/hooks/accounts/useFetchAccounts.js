@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-
-const userApiUrl = "https://jsonplaceholder.typicode.com/users";
+import { userApiUrl } from "../../contexts/accountsContext";
 
 export function useFetchAccounts() {
 
