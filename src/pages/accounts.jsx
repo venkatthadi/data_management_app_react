@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Header } from "../components/Header";
 import { AccountsContext } from "../utils/contexts/accountsContext";
 import { AccountContainer } from "../components/AccountContainer";

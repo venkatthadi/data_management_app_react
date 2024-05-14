@@ -16,6 +16,7 @@ export function useFetchAccounts() {
         .then((response) => response.json())
         .then((data) => {
             setAccountsData(data);
+            console.log(data);
             setErrors(undefined);
         })
         .catch((err) => {
