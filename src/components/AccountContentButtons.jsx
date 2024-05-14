@@ -11,7 +11,6 @@ export function AccountContentButtons() {
             <div>
                 <h3>Account Content Buttons</h3>
             </div>
-            {id}
             <br/>
             <label htmlFor="updateName">Updated name: </label>
             <input

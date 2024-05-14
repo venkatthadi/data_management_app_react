@@ -8,16 +8,24 @@ export function AccountContainer() {
     const accountsContextData = useContext(AccountsContext);
 
     return(
-        <div>
-            <div>
-                <h2>Accounts Container</h2>
-            </div>
+        <div className="container">
+        <table className="table table-hover table-striped table-bordered">
+            <thead className="thead-dark">
+                <tr>
+                <th>Account ID</th>
+                <th>Name</th>
+                <th colSpan="3"></th>
+                </tr>
+            </thead>
+            <tbody>
             { accountsContextData.map((currentAccount) => (
-                <div>
-                    {currentAccount.id}:{currentAccount.name}
-                </div>
+                <tr key={currentAccount.id}>
+                    <td>{currentAccount.id}</td>
+                    <td>{currentAccount.name}</td>
+                </tr>
             )) }
-            <AccountContentButtons />
+            </tbody>
+        </table>
         </div>
     )
 }
