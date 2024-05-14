@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 export function AccountsPage() {
     
-    const [accounts, setAccounts] = useState([]);
+    const [ accounts, setAccounts ] = useState([]);
     const { state } = useLocation();
 
     useEffect(() => {

@@ -4,9 +4,9 @@ const userApiUrl = "https://jsonplaceholder.typicode.com/users";
 
 export function useFetchAccounts(accountId) {
 
-    const [accountData, setAccountData] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState();
+    const [ accountData, setAccountData ] = useState({});
+    const [ loading, setLoading ] = useState(false);
+    const [ errors, setErrors ] = useState();
 
     useEffect(() => {
 

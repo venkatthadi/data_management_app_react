@@ -4,7 +4,7 @@ import { AccountContext } from "../utils/contexts/accountsContext";
 export function AccountContentButtons() {
     
     const { id, setAccounts } = useContext(AccountContext);
-    const [value, setValue] = useState("");
+    const [ value, setValue ] = useState("");
 
     return(
         <div>
