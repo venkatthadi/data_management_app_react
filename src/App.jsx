@@ -1,32 +1,41 @@
 import { useState, useEffect, useContext } from "react";
-import { useFetchAccounts } from "./utils/hooks/useFetchAccount";
+import { useFetchAccount } from "./utils/hooks/accounts/useFetchAccount";
+import { useFetchAccounts } from "./utils/hooks/accounts/useFetchAccounts";
 
 import { AccountContext } from "./utils/contexts/accountsContext";
 import { AccountDetails } from "./components/AccountDetails";
 import { AccountContainer } from "./components/AccountContainer";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 
-export default function App({ accountsData }) {
+export default function App() {
 
-    const { account, loading, errors } = useFetchAccounts(1);
+    const { accounts, loading1, errors1 } = useFetchAccounts();
+    const { account, loading2, errors2 } = useFetchAccount(1);
     const [ accountData, setAccountData ] = useState();
+    const [ accountsData, setAccountsData] = useState([]);
+    useEffect(() => {
+        if(!loading1 && !errors1 && accounts) {
+            setAccountsData(accounts);
+            // navigate("/users");
+        }
+    }, [loading1, errors1, accounts]);
+    useEffect(() => {
+        if(!loading2 && !errors2 && account) {
+            setAccountData(account);
+            // navigate("/users");
+        }
+    }, [loading2, errors2, account]);
+    
 
-    const [accounts, setAccounts] = useState(accountsData);
+    // const [accounts, setAccounts] = useState(accountsData);
     // const navigate = useNavigate();
 
     // console.log(accounts);
 
-    useEffect(() => {
-        if(!loading && !errors && account) {
-            setAccountData(account);
-            // navigate("/users");
-        }
-    }, [loading, errors, account]);
-
     return(
         <>
-            { accounts.map((currentAccount) => (
-                <AccountDetails key={currentAccount.id} account={currentAccount} setAccounts={setAccounts} />
+            { accountsData.map((currentAccount) => (
+                <AccountDetails key={currentAccount.id} account={currentAccount} setAccounts={setAccountsData} />
             )) }
             <nav>
                 <ul>
@@ -40,7 +49,7 @@ export default function App({ accountsData }) {
             </nav>
             <AccountContext.Provider value={{ ...accountData, setAccountData }}>
                 <div>
-                    {loading ? "loading..." : <AccountContainer />}
+                    {loading2 ? "loading..." : <AccountContainer />}
                     {/* <AccountContainer /> */}
                 </div>
             </AccountContext.Provider>
