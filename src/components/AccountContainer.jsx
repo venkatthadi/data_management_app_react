@@ -1,19 +1,22 @@
 import { useContext } from "react";
-import { AccountContext } from "../utils/contexts/accountsContext";
+import { AccountsContext } from "../utils/contexts/accountsContext";
 import { AccountContentButtons } from "./AccountContentButtons";
 
 
 export function AccountContainer() {
     
-    const accountContextData = useContext(AccountContext);
+    const accountsContextData = useContext(AccountsContext);
 
     return(
         <div>
             <div>
-                <h2>Account Container</h2>
+                <h2>Accounts Container</h2>
             </div>
-            <div>Name: {accountContextData.name}</div>
-            <div>Account ID: {accountContextData.id}</div>
+            { accountsContextData.map((currentAccount) => (
+                <div>
+                    {currentAccount.id}:{currentAccount.name}
+                </div>
+            )) }
             <AccountContentButtons />
         </div>
     )

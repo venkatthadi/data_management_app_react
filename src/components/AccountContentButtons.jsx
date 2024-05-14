@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { AccountContext } from "../utils/contexts/accountsContext";
+import { AccountContext } from "../utils/contexts/accountContext";
 
 export function AccountContentButtons() {
     
