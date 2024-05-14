@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const userApiUrl = "https://jsonplaceholder.typicode.com/users";
 
-export function useFetchAccounts(accountId) {
+export function useFetchAccount(accountId) {
 
     const [ accountData, setAccountData ] = useState({});
     const [ loading, setLoading ] = useState(false);

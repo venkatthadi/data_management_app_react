@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { AccountContent } from "./AccountContent";
 import { AccountContext } from "../utils/contexts/accountsContext";
+import { AccountContentButtons } from "./AccountContentButtons";
 
 
 export function AccountContainer() {
@@ -14,7 +14,7 @@ export function AccountContainer() {
             </div>
             <div>Name: {accountContextData.name}</div>
             <div>Account ID: {accountContextData.id}</div>
-            <AccountContent />
+            <AccountContentButtons />
         </div>
     )
 }

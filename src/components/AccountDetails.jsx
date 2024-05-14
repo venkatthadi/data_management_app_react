@@ -66,10 +66,10 @@ export function AccountDetails({ account, setAccounts }) {
     )
 }
 
-// AccountDetails.propTypes = { // type validation
-//     account: propTypes.shape({
-//         id: propTypes.number.isRequired,
-//         name: propTypes.string.isRequired,
-//     }).isRequired,
-//     setAccounts: propTypes.func.isRequired,
-// }
+AccountDetails.propTypes = { // type validation
+    account: propTypes.shape({
+        id: propTypes.number.isRequired,
+        name: propTypes.string.isRequired,
+    }).isRequired,
+    setAccounts: propTypes.func.isRequired,
+}
