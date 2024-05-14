@@ -1,28 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useFetchAccounts } from "./utils/hooks/useFetchAccount";
 
 import { AccountContext } from "./utils/contexts/accountsContext";
+import { AccountDetails } from "./components/AccountDetails";
 import { AccountContainer } from "./components/AccountContainer";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 
-export default function App() {
+export default function App({ accountsData }) {
 
     const { account, loading, errors } = useFetchAccounts(1);
-    // console.log(account, loading, errors);
+    const [ accountData, setAccountData ] = useState();
 
-    const [accounts, setAccounts] = useState();
+    const [accounts, setAccounts] = useState(accountsData);
+    // const navigate = useNavigate();
 
-    const navigate = useNavigate();
+    // console.log(accounts);
 
     useEffect(() => {
         if(!loading && !errors && account) {
-            setAccounts(account);
-            navigate("/users");
+            setAccountData(account);
+            // navigate("/users");
         }
-    }, [loading, errors, account, navigate]);
+    }, [loading, errors, account]);
 
     return(
-        <> 
+        <>
+            { accounts.map((currentAccount) => (
+                <AccountDetails key={currentAccount.id} account={currentAccount} setAccounts={setAccounts} />
+            )) }
             <nav>
                 <ul>
                     <li>
@@ -33,9 +38,10 @@ export default function App() {
                     </li>
                 </ul>
             </nav>
-            <AccountContext.Provider value={{ ...accounts, setAccounts }}>
+            <AccountContext.Provider value={{ ...accountData, setAccountData }}>
                 <div>
                     {loading ? "loading..." : <AccountContainer />}
+                    {/* <AccountContainer /> */}
                 </div>
             </AccountContext.Provider>
             <Outlet/>
