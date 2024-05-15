@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { userApiUrl } from "../../contexts/accountsContext";
+import { userApiUrl } from "../../../main";
 
-export function useFetchAccounts() {
+export function useFetchNetworks() {
 
-    const [ accountsData, setAccountsData ] = useState([]);
+    const [ networksData, setNetworksData ] = useState([]);
     const [ loading, setLoading ] = useState(false);
     const [ errors, setErrors ] = useState();
 
@@ -12,11 +12,10 @@ export function useFetchAccounts() {
         const controller = new AbortController();
 
         setLoading(true);
-        fetch(`${userApiUrl}`, { signal: controller.signal, })
+        fetch(`${userApiUrl}/networks`, { signal: controller.signal, })
         .then((response) => response.json())
         .then((data) => {
-            setAccountsData(data);
-            // console.log(data);
+            setNetworksData(data);
             setErrors(undefined);
         })
         .catch((err) => {
@@ -36,5 +35,5 @@ export function useFetchAccounts() {
         };
     }, []);
 
-    return { accounts: accountsData, loading, errors };
+    return { networks: networksData, loading, errors };
 }

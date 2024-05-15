@@ -1,21 +1,29 @@
 import { useEffect, useState } from "react";
-import { userApiUrl } from "../../utils/contexts/accountsContext";
-// import { useFetchAccounts } from "../utils/hooks/accounts/useFetchAccounts";
-// import { useCreateAccount } from "../utils/hooks/accounts/useCreateAccount";
+import { userApiUrl } from "../../main";
 
-
-export function AccountContainer2() {
+export function NetworkContainer() {
     
-    const [ accountsContextData, setAccountsContextData ] = useState([]);
-    const [ name, setName ] = useState("");
-    const [ isEditing, setIsEditing ] = useState(false);
-    const [ editingAccountId, setEditingAccountId ] = useState(null);
-    const [ editingField, setEditingField ] = useState('');
-    const [ accountName, setAccountName ] = useState('');
+    const [networksContextData, setNetworksContextData] = useState([]);
+    const [accountsContextData, setAccountsContextData] = useState([]);
+    const [name, setName] = useState("");
+    const [aid, setAid] = useState(0);
+    const [editingNetworkId, setEditingNetworkId] = useState(null);
+    const [editingName, setEditingName] = useState('');
+    const [editingAccountId, setEditingAccountId] = useState(0);
+
+    const fetchNetworks = async () => {
+        try {
+            const response = await fetch(`${userApiUrl}/networks`);
+            const data = await response.json();
+            setNetworksContextData(data);
+        } catch (error) {
+            console.error("Error fetching networks data:", error);
+        }
+    };
 
     const fetchAccounts = async () => {
         try {
-            const response = await fetch(userApiUrl);
+            const response = await fetch(`${userApiUrl}/accounts`);
             const data = await response.json();
             setAccountsContextData(data);
         } catch (error) {
@@ -24,123 +32,154 @@ export function AccountContainer2() {
     };
 
     useEffect(() => {
+        fetchNetworks();
         fetchAccounts();
     }, []);
 
-    const handleDeleteClick = async (accountId) => {
+    const handleDeleteClick = async (networkId) => {
         try {
-            await fetch(`${userApiUrl}/${accountId}`, {
+            await fetch(`${userApiUrl}/networks/${networkId}`, {
                 method: "DELETE",
             });
             console.log("Delete successful");
-            // Re-fetch data after delete
-            fetchAccounts();
+            fetchNetworks();
         } catch (error) {
-            console.error("Error deleting account:", error);
+            console.error("Error deleting network:", error);
         }
     };
 
-    const handleEditClick = (accountId, field, currentValue) => {
-        setEditingAccountId(accountId);
-        setEditingField(field);
-        setAccountName(currentValue);
+    const handleEditClick = (networkId, currentName, currentAccountId) => {
+        setEditingNetworkId(networkId);
+        setEditingName(currentName);
+        setEditingAccountId(currentAccountId);
     };
 
-    const handleSaveClick = (accountId) => {
-        fetch(`${userApiUrl}/${accountId}`, {
+    const handleSaveClick = (networkId) => {
+        fetch(`${userApiUrl}/networks/${networkId}`, {
             method: "PUT",
             headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            body: JSON.stringify({ name: accountName }),
+            body: JSON.stringify({ name: editingName, accountId: editingAccountId }),
         })
         .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((err) => console.log(`error: ${err}`));
+        .then((data) => {
+            console.log(data);
+            fetchNetworks();
+        })
+        .catch((err) => console.log(`Error: ${err}`));
 
-        fetchAccounts();
+        setEditingNetworkId(null);
+        setEditingName('');
+        setEditingAccountId(0);
+    };
 
-        setEditingAccountId(null);
-        setEditingField('');
-        setAccountName('');
+    const handleAddNetwork = async (e) => {
+        e.preventDefault();
+        if (name && aid) {
+            try {
+                const response = await fetch(`${userApiUrl}/networks`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({ name, accountId: aid }),
+                });
+                const data = await response.json();
+                console.log("Success", data);
+                fetchNetworks();
+                setName("");
+                setAid(0);
+            } catch (err) {
+                console.error("Error adding network:", err);
+            }
+        }
+    };
+
+    const getAccountNameById = (id) => {
+        const account = accountsContextData.find(account => account.id === id);
+        return account ? account.name : 'Unknown';
     };
 
     return(
         <div className="container">
             <br/>
-            <form
-                onSubmit={(e) => {
-                        
-                        // e.preventDefault();
-
-                        if(name) {
-
-                            fetch(userApiUrl, {
-                                method: "POST", // POST req
-                                body: JSON.stringify({
-                                    name: name,
-                                }),
-                                headers: {
-                                    'Content-type': 'application/json; charset=UTF-8',
-                                }
-                            })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                console.log("Success");
-                                console.log(data);
-                            }).catch((err) => console.log(err));
-                        }
-
-                    }
-                }
-            >
-                <div className="input-group mb-3"> 
-                    <input 
-                        id="name" 
-                        name="name"
-                        value={name}
-                        className="form-control"
-                        placeholder="Account Name"
-                        aria-describedby="button-addon2"
-                        onChange={(e) => {
+            <form onSubmit={handleAddNetwork} >
+                <div className="input-group flex-nowrap">
+                    <span className="input-group-text" id="addon-wrapping">Name</span>
+                    <input type="text" name="name" id="name" className="form-control" aria-describedby="addon-wrapping" value={name} placeholder="Network Name" onChange={(e) => {
                             setName(e.target.value);
-                        }}
-                    />
-                    <button
-                        id="button-addon2"
-                        type="button"
-                        className="btn btn-outline-secondary"
-                    >
-                        Add account
-                    </button>
+                        }}/>
                 </div>
+                <div className="field input-group mb-3">
+                    <div className="input-group-prepend">
+                        <label className="input-group-text" htmlFor="inputGroupSelect01">Account</label>
+                    </div>
+                    <select
+                        className="custom-select"
+                        id="inputGroupSelect01"
+                        value={aid}
+                        onChange={(e) => setAid(Number(e.target.value))}
+                    >
+                        <option value={0} disabled>Choose...</option>
+                        {accountsContextData.map((account) => (
+                            <option key={account.id} value={account.id}>
+                                {account.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <button
+                    type="submit"
+                    className="btn btn-secondary"
+                >
+                    Add network
+                </button>
             </form>
+            <br/>
             <form onSubmit={(e) => e.preventDefault()}>
             <table className="table table-hover table-striped table-bordered">
                 <thead className="thead-dark">
                     <tr>
-                        <th>Account ID</th>
+                        <th>ID</th>
                         <th>Name</th>
-                        <th colSpan="3"></th>
+                        <th>A ID</th>
+                        <th colSpan="4"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {accountsContextData.map((currentAccount) => (
-                        <tr key={currentAccount.id}>
-                            <td>{currentAccount.id}</td>
+                    {networksContextData.map((currentNetwork) => (
+                        <tr key={currentNetwork.id}>
+                            <td>{currentNetwork.id}</td>
                             <td>
-                                {editingAccountId === currentAccount.id && editingField === 'name' ? (
+                                {editingNetworkId === currentNetwork.id ? (
                                     <input
                                         id="name"
                                         name="name"
-                                        value={accountName}
-                                        onChange={(e) => setAccountName(e.target.value)}
+                                        value={editingName}
+                                        onChange={(e) => setEditingName(e.target.value)}
                                     />
                                 ) : (
-                                    <span>{currentAccount.name}</span>
+                                    <span>{currentNetwork.name}</span>
+                                )}
+                            </td>
+                            <td>
+                                {editingNetworkId === currentNetwork.id ? (
+                                    <select
+                                        value={editingAccountId}
+                                        onChange={(e) => setEditingAccountId(Number(e.target.value))}
+                                    >
+                                        {accountsContextData.map((account) => (
+                                            <option key={account.id} value={account.id}>
+                                                {account.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <span>{getAccountNameById(currentNetwork.accountId)}</span>
                                 )}
                             </td>
                             <td>
                                 <button
-                                    onClick={() => handleDeleteClick(currentAccount.id)}
+                                    onClick={() => handleDeleteClick(currentNetwork.id)}
                                     className="btn btn-outline-danger"
                                 >
                                     Delete
@@ -148,7 +187,7 @@ export function AccountContainer2() {
                             </td>
                             <td>
                                 <button
-                                    onClick={() => handleEditClick(currentAccount.id, 'name', currentAccount.name)}
+                                    onClick={() => handleEditClick(currentNetwork.id, currentNetwork.name, currentNetwork.accountId)}
                                     className="btn btn-outline-secondary"
                                 >
                                     Update
@@ -156,8 +195,8 @@ export function AccountContainer2() {
                             </td>
                             <td>
                                 <button
-                                    disabled={editingAccountId !== currentAccount.id || editingField !== 'name'}
-                                    onClick={() => handleSaveClick(currentAccount.id)}
+                                    disabled={editingNetworkId !== currentNetwork.id}
+                                    onClick={() => handleSaveClick(currentNetwork.id)}
                                     className="btn btn-outline-success"
                                 >
                                     Save
