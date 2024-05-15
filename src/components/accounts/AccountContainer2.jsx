@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { userApiUrl } from "../utils/contexts/accountsContext";
+import { userApiUrl } from "../../utils/contexts/accountsContext";
 import { AccountContentButtons } from "./AccountContentButtons";
 // import { useFetchAccounts } from "../utils/hooks/accounts/useFetchAccounts";
 // import { useCreateAccount } from "../utils/hooks/accounts/useCreateAccount";

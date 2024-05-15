@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "../components/Header";
 import { AccountsContext } from "../utils/contexts/accountsContext";
-import { AccountContainer2 } from "../components/AccountContainer2";
+import { AccountContainer2 } from "../components/accounts/AccountContainer2";
 import { useFetchAccounts } from "../utils/hooks/accounts/useFetchAccounts";
 
 export function AccountsPage() {
