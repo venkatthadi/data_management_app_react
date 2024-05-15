@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { userApiUrl } from "../../utils/contexts/accountsContext";
 // import { useFetchAccounts } from "../utils/hooks/accounts/useFetchAccounts";
-// import { useCreateAccount } from "../utils/hooks/accounts/useCreateAccount";
 
-
-export function AccountContainer2() {
+export function AccountContainer() {
     
     const [ accountsContextData, setAccountsContextData ] = useState([]);
     const [ name, setName ] = useState("");
-    const [ isEditing, setIsEditing ] = useState(false);
     const [ editingAccountId, setEditingAccountId ] = useState(null);
     const [ editingField, setEditingField ] = useState('');
     const [ accountName, setAccountName ] = useState('');
@@ -33,7 +30,6 @@ export function AccountContainer2() {
                 method: "DELETE",
             });
             console.log("Delete successful");
-            // Re-fetch data after delete
             fetchAccounts();
         } catch (error) {
             console.error("Error deleting account:", error);
@@ -63,51 +59,40 @@ export function AccountContainer2() {
         setAccountName('');
     };
 
+    const handleAddAccount = async (e) => {
+        e.preventDefault();
+        if (name) {
+            try {
+                const response = await fetch(userApiUrl, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({ name }),
+                });
+                const data = await response.json();
+                console.log("Success", data);
+                fetchAccounts();
+                setName("");
+            } catch (err) {
+                console.error("Error adding account:", err);
+            }
+        }
+    };
+
     return(
         <div className="container">
             <br/>
-            <form
-                onSubmit={(e) => {
-                        
-                        // e.preventDefault();
-
-                        if(name) {
-
-                            fetch(userApiUrl, {
-                                method: "POST", // POST req
-                                body: JSON.stringify({
-                                    name: name,
-                                }),
-                                headers: {
-                                    'Content-type': 'application/json; charset=UTF-8',
-                                }
-                            })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                console.log("Success");
-                                console.log(data);
-                            }).catch((err) => console.log(err));
-                        }
-
-                    }
-                }
-            >
-                <div className="input-group mb-3"> 
-                    <input 
-                        id="name" 
-                        name="name"
-                        value={name}
-                        className="form-control"
-                        placeholder="Account Name"
-                        aria-describedby="button-addon2"
-                        onChange={(e) => {
+            <form onSubmit={handleAddAccount}>
+                <div className="input-group flex-nowrap">
+                    <span className="input-group-text" id="addon-wrapping">Name</span>
+                    <input type="text" name="name" id="name" className="form-control" aria-describedby="addon-wrapping" value={name} placeholder="Network Name" onChange={(e) => {
                             setName(e.target.value);
-                        }}
-                    />
+                        }}/>
                     <button
                         id="button-addon2"
-                        type="button"
-                        className="btn btn-outline-secondary"
+                        type="submit"
+                        className="btn btn-secondary"
                     >
                         Add account
                     </button>
@@ -117,7 +102,7 @@ export function AccountContainer2() {
             <table className="table table-hover table-striped table-bordered">
                 <thead className="thead-dark">
                     <tr>
-                        <th>Account ID</th>
+                        <th>ID</th>
                         <th>Name</th>
                         <th colSpan="3"></th>
                     </tr>

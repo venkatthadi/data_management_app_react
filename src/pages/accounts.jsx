@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Header } from "../components/Header";
-import { AccountContainer2 } from "../components/accounts/AccountContainer";
+import { AccountContainer } from "../components/accounts/AccountContainer";
 import { useFetchAccounts } from "../utils/hooks/accounts/useFetchAccounts";
 
 export function AccountsPage() {
@@ -18,11 +18,9 @@ export function AccountsPage() {
         <> 
             <Header />
             <div className="container">
-                <AccountsContext.Provider value={ accountsData }>
-                    <div className="container">
-                        {loading ? "loading..." : <AccountContainer2 />}
-                    </div>
-                </AccountsContext.Provider>
+                <div className="container">
+                    {loading ? "loading..." : <AccountContainer />}
+                </div>
             </div>
         </>
     );
