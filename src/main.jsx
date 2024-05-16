@@ -3,9 +3,12 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import App from './App';
-import { AccountsPage } from './pages/accounts';
 import "./globals.css";
+import { AccountsPage } from './pages/accounts';
 import { NetworksPage } from './pages/networks';
+import { SchoolsPage } from './pages/schools';
+import { UsertypesPage } from './pages/usertypes';
+import { UsersPage } from './pages/users';
 
 export const userApiUrl = "http://127.0.0.1:5001";
 
@@ -27,17 +30,17 @@ const router = createBrowserRouter([
     },
     {
         path: "/schools",
-        element: <AccountsPage />,
+        element: <SchoolsPage />,
         children: [],
     },
     {
         path: "/usertypes",
-        element: <AccountsPage />,
+        element: <UsertypesPage />,
         children: [],
     },
     {
         path: "/users",
-        element: <AccountsPage />,
+        element: <UsersPage />,
         children: [],
     },
 

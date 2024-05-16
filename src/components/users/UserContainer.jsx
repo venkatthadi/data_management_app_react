@@ -1,146 +1,244 @@
 import { useEffect, useState } from "react";
-import { userApiUrl } from "../../utils/contexts/accountsContext";
-// import { useFetchAccounts } from "../utils/hooks/accounts/useFetchAccounts";
-// import { useCreateAccount } from "../utils/hooks/accounts/useCreateAccount";
+import { userApiUrl } from "../../main";
 
+export function UserContainer() {
 
-export function AccountContainer2() {
-    
-    const [ accountsContextData, setAccountsContextData ] = useState([]);
-    const [ name, setName ] = useState("");
-    const [ isEditing, setIsEditing ] = useState(false);
-    const [ editingAccountId, setEditingAccountId ] = useState(null);
-    const [ editingField, setEditingField ] = useState('');
-    const [ accountName, setAccountName ] = useState('');
+    const [usersContextData, setUsersContextData] = useState([]);
+    const [schoolsContextData, setSchoolsContextData] = useState([]);
+    const [userTypesContextData, setUserTypesContextData] = useState([]);
+    const [name, setName] = useState("");
+    const [schoolId, setSchoolId] = useState(0);
+    const [usertypeId, setUsertypeId] = useState(0);
+    const [editingUserId, setEditingUserId] = useState(null);
+    const [editingName, setEditingName] = useState('');
+    const [editingSchoolId, setEditingSchoolId] = useState(0);
+    const [editingUsertypeId, setEditingUsertypeId] = useState(0);
 
-    const fetchAccounts = async () => {
+    const fetchUsers = async () => {
         try {
-            const response = await fetch(userApiUrl);
+            const response = await fetch(`${userApiUrl}/users`);
             const data = await response.json();
-            setAccountsContextData(data);
+            setUsersContextData(data);
         } catch (error) {
-            console.error("Error fetching accounts data:", error);
+            console.error("Error fetching users data:", error);
+        }
+    };
+
+    const fetchSchools = async () => {
+        try {
+            const response = await fetch(`${userApiUrl}/schools`);
+            const data = await response.json();
+            setSchoolsContextData(data);
+        } catch (error) {
+            console.error("Error fetching schools data:", error);
+        }
+    };
+
+    const fetchUserTypes = async () => {
+        try {
+            const response = await fetch(`${userApiUrl}/usertypes`);
+            const data = await response.json();
+            setUserTypesContextData(data);
+        } catch (error) {
+            console.error("Error fetching user types data:", error);
         }
     };
 
     useEffect(() => {
-        fetchAccounts();
+        fetchUsers();
+        fetchSchools();
+        fetchUserTypes();
     }, []);
 
-    const handleDeleteClick = async (accountId) => {
+    const handleDeleteClick = async (userId) => {
         try {
-            await fetch(`${userApiUrl}/${accountId}`, {
+            await fetch(`${userApiUrl}/users/${userId}`, {
                 method: "DELETE",
             });
             console.log("Delete successful");
-            // Re-fetch data after delete
-            fetchAccounts();
+            fetchUsers();
         } catch (error) {
-            console.error("Error deleting account:", error);
+            console.error("Error deleting user:", error);
         }
     };
 
-    const handleEditClick = (accountId, field, currentValue) => {
-        setEditingAccountId(accountId);
-        setEditingField(field);
-        setAccountName(currentValue);
+    const handleEditClick = (userId, currentName, currentSchoolId, currentUsertypeId) => {
+        setEditingUserId(userId);
+        setEditingName(currentName);
+        setEditingSchoolId(currentSchoolId);
+        setEditingUsertypeId(currentUsertypeId);
     };
 
-    const handleSaveClick = (accountId) => {
-        fetch(`${userApiUrl}/${accountId}`, {
+    const handleSaveClick = (userId) => {
+        fetch(`${userApiUrl}/users/${userId}`, {
             method: "PUT",
             headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            body: JSON.stringify({ name: accountName }),
+            body: JSON.stringify({ name: editingName, schoolId: editingSchoolId, usertypeId: editingUsertypeId }),
         })
         .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((err) => console.log(`error: ${err}`));
+        .then((data) => {
+            console.log(data);
+            fetchUsers();
+        })
+        .catch((err) => console.log(`Error: ${err}`));
 
-        fetchAccounts();
+        setEditingUserId(null);
+        setEditingName('');
+        setEditingSchoolId(0);
+        setEditingUsertypeId(0);
+    };
 
-        setEditingAccountId(null);
-        setEditingField('');
-        setAccountName('');
+    const handleAddUser = async (e) => {
+        e.preventDefault();
+        if (name && schoolId && usertypeId) {
+            try {
+                const response = await fetch(`${userApiUrl}/users`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({ name, schoolId, usertypeId }),
+                });
+                const data = await response.json();
+                console.log("Success", data);
+                fetchUsers();
+                setName("");
+                setSchoolId(0);
+                setUsertypeId(0);
+            } catch (err) {
+                console.error("Error adding user:", err);
+            }
+        }
+    };
+
+    const getSchoolNameById = (id) => {
+        const school = schoolsContextData.find(school => school.id === id);
+        return school ? school.name : 'Unknown';
+    };
+
+    const getUserTypeNameById = (id) => {
+        const userType = userTypesContextData.find(userType => userType.id === id);
+        return userType ? userType.name : 'Unknown';
     };
 
     return(
         <div className="container">
             <br/>
-            <form
-                onSubmit={(e) => {
-                        
-                        // e.preventDefault();
-
-                        if(name) {
-
-                            fetch(userApiUrl, {
-                                method: "POST", // POST req
-                                body: JSON.stringify({
-                                    name: name,
-                                }),
-                                headers: {
-                                    'Content-type': 'application/json; charset=UTF-8',
-                                }
-                            })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                console.log("Success");
-                                console.log(data);
-                            }).catch((err) => console.log(err));
-                        }
-
-                    }
-                }
-            >
-                <div className="input-group mb-3"> 
-                    <input 
-                        id="name" 
-                        name="name"
-                        value={name}
-                        className="form-control"
-                        placeholder="Account Name"
-                        aria-describedby="button-addon2"
-                        onChange={(e) => {
+            <form onSubmit={handleAddUser} >
+                <div className="input-group flex-nowrap">
+                    <div className="input-group-prepend">
+                        <label className="input-group-text" htmlFor="userName">Name</label>
+                    </div>
+                    <input type="text" name="name" id="userName" className="form-control" aria-describedby="addon-wrapping" value={name} placeholder="User Name" onChange={(e) => {
                             setName(e.target.value);
-                        }}
-                    />
-                    <button
-                        id="button-addon2"
-                        type="button"
-                        className="btn btn-outline-secondary"
-                    >
-                        Add account
-                    </button>
+                        }}/>
                 </div>
+                <div className="field input-group mb-3">
+                    <div className="input-group-prepend">
+                        <label className="input-group-text" htmlFor="schoolSelect">School</label>
+                    </div>
+                    <select
+                        className="custom-select"
+                        id="schoolSelect"
+                        value={schoolId}
+                        onChange={(e) => setSchoolId(Number(e.target.value))}
+                    >
+                        <option value={0} disabled>Choose...</option>
+                        {schoolsContextData.map((school) => (
+                            <option key={school.id} value={school.id}>
+                                {school.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="field input-group mb-3">
+                    <div className="input-group-prepend">
+                        <label className="input-group-text" htmlFor="userTypeSelect">User Type</label>
+                    </div>
+                    <select
+                        className="custom-select"
+                        id="userTypeSelect"
+                        value={usertypeId}
+                        onChange={(e) => setUsertypeId(Number(e.target.value))}
+                    >
+                        <option value={0} disabled>Choose...</option>
+                        {userTypesContextData.map((userType) => (
+                            <option key={userType.id} value={userType.id}>
+                                {userType.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <button
+                    type="submit"
+                    className="btn btn-secondary"
+                >
+                    Add user
+                </button>
             </form>
+            <br/>
             <form onSubmit={(e) => e.preventDefault()}>
             <table className="table table-hover table-striped table-bordered">
                 <thead className="thead-dark">
                     <tr>
-                        <th>Account ID</th>
+                        <th>ID</th>
                         <th>Name</th>
-                        <th colSpan="3"></th>
+                        <th>School</th>
+                        <th>User Type</th>
+                        <th colSpan="4"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {accountsContextData.map((currentAccount) => (
-                        <tr key={currentAccount.id}>
-                            <td>{currentAccount.id}</td>
+                    {usersContextData.map((currentUser) => (
+                        <tr key={currentUser.id}>
+                            <td>{currentUser.id}</td>
                             <td>
-                                {editingAccountId === currentAccount.id && editingField === 'name' ? (
+                                {editingUserId === currentUser.id ? (
                                     <input
                                         id="name"
                                         name="name"
-                                        value={accountName}
-                                        onChange={(e) => setAccountName(e.target.value)}
+                                        value={editingName}
+                                        onChange={(e) => setEditingName(e.target.value)}
                                     />
                                 ) : (
-                                    <span>{currentAccount.name}</span>
+                                    <span>{currentUser.name}</span>
+                                )}
+                            </td>
+                            <td>
+                                {editingUserId === currentUser.id ? (
+                                    <select
+                                        value={editingSchoolId}
+                                        onChange={(e) => setEditingSchoolId(Number(e.target.value))}
+                                    >
+                                        {schoolsContextData.map((school) => (
+                                            <option key={school.id} value={school.id}>
+                                                {school.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <span>{getSchoolNameById(currentUser.schoolId)}</span>
+                                )}
+                            </td>
+                            <td>
+                                {editingUserId === currentUser.id ? (
+                                    <select
+                                        value={editingUsertypeId}
+                                        onChange={(e) => setEditingUsertypeId(Number(e.target.value))}
+                                    >
+                                        {userTypesContextData.map((userType) => (
+                                            <option key={userType.id} value={userType.id}>
+                                                {userType.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <span>{getUserTypeNameById(currentUser.usertypeId)}</span>
                                 )}
                             </td>
                             <td>
                                 <button
-                                    onClick={() => handleDeleteClick(currentAccount.id)}
+                                    onClick={() => handleDeleteClick(currentUser.id)}
                                     className="btn btn-outline-danger"
                                 >
                                     Delete
@@ -148,7 +246,7 @@ export function AccountContainer2() {
                             </td>
                             <td>
                                 <button
-                                    onClick={() => handleEditClick(currentAccount.id, 'name', currentAccount.name)}
+                                    onClick={() => handleEditClick(currentUser.id, currentUser.name, currentUser.schoolId, currentUser.usertypeId)}
                                     className="btn btn-outline-secondary"
                                 >
                                     Update
@@ -156,8 +254,8 @@ export function AccountContainer2() {
                             </td>
                             <td>
                                 <button
-                                    disabled={editingAccountId !== currentAccount.id || editingField !== 'name'}
-                                    onClick={() => handleSaveClick(currentAccount.id)}
+                                    disabled={editingUserId !== currentUser.id}
+                                    onClick={() => handleSaveClick(currentUser.id)}
                                     className="btn btn-outline-success"
                                 >
                                     Save

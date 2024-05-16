@@ -85,7 +85,9 @@ export function AccountContainer() {
             <br/>
             <form onSubmit={handleAddAccount}>
                 <div className="input-group flex-nowrap">
-                    <span className="input-group-text" id="addon-wrapping">Name</span>
+                    <div className="input-group-prepend">
+                        <label className="input-group-text">Name</label>
+                    </div>
                     <input type="text" name="name" id="name" className="form-control" aria-describedby="addon-wrapping" value={name} placeholder="Network Name" onChange={(e) => {
                             setName(e.target.value);
                         }}/>
@@ -98,6 +100,7 @@ export function AccountContainer() {
                     </button>
                 </div>
             </form>
+            <br/>
             <form onSubmit={(e) => e.preventDefault()}>
             <table className="table table-hover table-striped table-bordered">
                 <thead className="thead-dark">

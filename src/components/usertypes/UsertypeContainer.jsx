@@ -1,146 +1,134 @@
 import { useEffect, useState } from "react";
-import { userApiUrl } from "../../utils/contexts/accountsContext";
-// import { useFetchAccounts } from "../utils/hooks/accounts/useFetchAccounts";
-// import { useCreateAccount } from "../utils/hooks/accounts/useCreateAccount";
+import { userApiUrl } from "../../main";
 
-
-export function AccountContainer2() {
+export function UserTypeContainer() {
     
-    const [ accountsContextData, setAccountsContextData ] = useState([]);
-    const [ name, setName ] = useState("");
-    const [ isEditing, setIsEditing ] = useState(false);
-    const [ editingAccountId, setEditingAccountId ] = useState(null);
-    const [ editingField, setEditingField ] = useState('');
-    const [ accountName, setAccountName ] = useState('');
+    const [userTypesContextData, setUserTypesContextData] = useState([]);
+    const [name, setName] = useState("");
+    const [editingUserTypeId, setEditingUserTypeId] = useState(null);
+    const [editingField, setEditingField] = useState('');
+    const [userTypeName, setUserTypeName] = useState('');
 
-    const fetchAccounts = async () => {
+    const fetchUserTypes = async () => {
         try {
-            const response = await fetch(userApiUrl);
+            const response = await fetch(`${userApiUrl}/usertypes`);
             const data = await response.json();
-            setAccountsContextData(data);
+            setUserTypesContextData(data);
         } catch (error) {
-            console.error("Error fetching accounts data:", error);
+            console.error("Error fetching user types data:", error);
         }
     };
 
     useEffect(() => {
-        fetchAccounts();
+        fetchUserTypes();
     }, []);
 
-    const handleDeleteClick = async (accountId) => {
+    const handleDeleteClick = async (userTypeId) => {
         try {
-            await fetch(`${userApiUrl}/${accountId}`, {
+            await fetch(`${userApiUrl}/usertypes/${userTypeId}`, {
                 method: "DELETE",
             });
             console.log("Delete successful");
-            // Re-fetch data after delete
-            fetchAccounts();
+            fetchUserTypes();
         } catch (error) {
-            console.error("Error deleting account:", error);
+            console.error("Error deleting user type:", error);
         }
     };
 
-    const handleEditClick = (accountId, field, currentValue) => {
-        setEditingAccountId(accountId);
+    const handleEditClick = (userTypeId, field, currentValue) => {
+        setEditingUserTypeId(userTypeId);
         setEditingField(field);
-        setAccountName(currentValue);
+        setUserTypeName(currentValue);
     };
 
-    const handleSaveClick = (accountId) => {
-        fetch(`${userApiUrl}/${accountId}`, {
+    const handleSaveClick = (userTypeId) => {
+        fetch(`${userApiUrl}/usertypes/${userTypeId}`, {
             method: "PUT",
             headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            body: JSON.stringify({ name: accountName }),
+            body: JSON.stringify({ name: userTypeName }),
         })
         .then((response) => response.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+            console.log(data);
+            fetchUserTypes();
+        })
         .catch((err) => console.log(`error: ${err}`));
 
-        fetchAccounts();
-
-        setEditingAccountId(null);
+        setEditingUserTypeId(null);
         setEditingField('');
-        setAccountName('');
+        setUserTypeName('');
+    };
+
+    const handleAddUserType = async (e) => {
+        e.preventDefault();
+        if (name) {
+            try {
+                const response = await fetch(`${userApiUrl}/usertypes`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({ name }),
+                });
+                const data = await response.json();
+                console.log("Success", data);
+                fetchUserTypes();
+                setName("");
+            } catch (err) {
+                console.error("Error adding user type:", err);
+            }
+        }
     };
 
     return(
         <div className="container">
             <br/>
-            <form
-                onSubmit={(e) => {
-                        
-                        // e.preventDefault();
-
-                        if(name) {
-
-                            fetch(userApiUrl, {
-                                method: "POST", // POST req
-                                body: JSON.stringify({
-                                    name: name,
-                                }),
-                                headers: {
-                                    'Content-type': 'application/json; charset=UTF-8',
-                                }
-                            })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                console.log("Success");
-                                console.log(data);
-                            }).catch((err) => console.log(err));
-                        }
-
-                    }
-                }
-            >
-                <div className="input-group mb-3"> 
-                    <input 
-                        id="name" 
-                        name="name"
-                        value={name}
-                        className="form-control"
-                        placeholder="Account Name"
-                        aria-describedby="button-addon2"
-                        onChange={(e) => {
+            <form onSubmit={handleAddUserType}>
+                <div className="input-group flex-nowrap">
+                    <div className="input-group-prepend">
+                        <label className="input-group-text">Name</label>
+                    </div>
+                    <input type="text" name="name" id="name" className="form-control" aria-describedby="addon-wrapping" value={name} placeholder="User Type Name" onChange={(e) => {
                             setName(e.target.value);
-                        }}
-                    />
+                        }}/>
                     <button
                         id="button-addon2"
-                        type="button"
-                        className="btn btn-outline-secondary"
+                        type="submit"
+                        className="btn btn-secondary"
                     >
-                        Add account
+                        Add User Type
                     </button>
                 </div>
             </form>
+            <br/>
             <form onSubmit={(e) => e.preventDefault()}>
             <table className="table table-hover table-striped table-bordered">
                 <thead className="thead-dark">
                     <tr>
-                        <th>Account ID</th>
+                        <th>ID</th>
                         <th>Name</th>
                         <th colSpan="3"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {accountsContextData.map((currentAccount) => (
-                        <tr key={currentAccount.id}>
-                            <td>{currentAccount.id}</td>
+                    {userTypesContextData.map((currentUserType) => (
+                        <tr key={currentUserType.id}>
+                            <td>{currentUserType.id}</td>
                             <td>
-                                {editingAccountId === currentAccount.id && editingField === 'name' ? (
+                                {editingUserTypeId === currentUserType.id && editingField === 'name' ? (
                                     <input
                                         id="name"
                                         name="name"
-                                        value={accountName}
-                                        onChange={(e) => setAccountName(e.target.value)}
+                                        value={userTypeName}
+                                        onChange={(e) => setUserTypeName(e.target.value)}
                                     />
                                 ) : (
-                                    <span>{currentAccount.name}</span>
+                                    <span>{currentUserType.name}</span>
                                 )}
                             </td>
                             <td>
                                 <button
-                                    onClick={() => handleDeleteClick(currentAccount.id)}
+                                    onClick={() => handleDeleteClick(currentUserType.id)}
                                     className="btn btn-outline-danger"
                                 >
                                     Delete
@@ -148,7 +136,7 @@ export function AccountContainer2() {
                             </td>
                             <td>
                                 <button
-                                    onClick={() => handleEditClick(currentAccount.id, 'name', currentAccount.name)}
+                                    onClick={() => handleEditClick(currentUserType.id, 'name', currentUserType.name)}
                                     className="btn btn-outline-secondary"
                                 >
                                     Update
@@ -156,8 +144,8 @@ export function AccountContainer2() {
                             </td>
                             <td>
                                 <button
-                                    disabled={editingAccountId !== currentAccount.id || editingField !== 'name'}
-                                    onClick={() => handleSaveClick(currentAccount.id)}
+                                    disabled={editingUserTypeId !== currentUserType.id || editingField !== 'name'}
+                                    onClick={() => handleSaveClick(currentUserType.id)}
                                     className="btn btn-outline-success"
                                 >
                                     Save

@@ -104,7 +104,9 @@ export function NetworkContainer() {
             <br/>
             <form onSubmit={handleAddNetwork} >
                 <div className="input-group flex-nowrap">
-                    <span className="input-group-text" id="addon-wrapping">Name</span>
+                    <div className="input-group-prepend">
+                        <label className="input-group-text" htmlFor="inputGroupSelect01">Name</label>
+                    </div>
                     <input type="text" name="name" id="name" className="form-control" aria-describedby="addon-wrapping" value={name} placeholder="Network Name" onChange={(e) => {
                             setName(e.target.value);
                         }}/>
