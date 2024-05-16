@@ -1,24 +1,20 @@
 import { Header } from "./components/Header";
+import { useState, useContext } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
+import { TokenContext } from "./utils/contexts/authContext";
 
 export default function App() {
 
-    // const [accounts, setAccounts] = useState(accountsData);
-    // const navigate = useNavigate();
-
-    // console.log(accounts);
+    const [ isAuth, setIsAuth ] = useState(false);
+    const [ token, setToken ] = useState("");
 
     return(
         <>
             <div>
-                {/* { accountsData.map((currentAccount) => 
-                    (<AccountDetails key={currentAccount.id} account={currentAccount} setAccounts={setAccountsData} />)
-                ) } */}
-                <Header />
-                <div>
-                    Home Page
-                </div>
-                <Outlet />
+                <TokenContext.Provider value={{ isAuth, setIsAuth, token, setToken }}>
+                    <Header />
+                    <Outlet />
+                </TokenContext.Provider>
             </div>
         </>
     );

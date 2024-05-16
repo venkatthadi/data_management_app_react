@@ -9,6 +9,8 @@ import { NetworksPage } from './pages/networks';
 import { SchoolsPage } from './pages/schools';
 import { UsertypesPage } from './pages/usertypes';
 import { UsersPage } from './pages/users';
+import { LoginPage } from './pages/login';
+import { RegisterPage } from './pages/register';
 
 export const userApiUrl = "http://127.0.0.1:5001";
 
@@ -43,11 +45,19 @@ const router = createBrowserRouter([
         element: <UsersPage />,
         children: [],
     },
+    {
+        path: "/login",
+        element: <LoginPage />,
+    },
+    {
+        path: "/register",
+        element: <RegisterPage />,
+    }
 
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <RouterProvider router={router}/>
-    </React.StrictMode>
+    // </React.StrictMode>
 );
