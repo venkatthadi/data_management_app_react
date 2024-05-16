@@ -125,7 +125,7 @@ export function UserContainer() {
         <div className="container">
             <br/>
             <form onSubmit={handleAddUser} >
-                <div className="input-group flex-nowrap">
+                <div className="field input-group flex-nowrap mb-3">
                     <div className="input-group-prepend">
                         <label className="input-group-text" htmlFor="userName">Name</label>
                     </div>

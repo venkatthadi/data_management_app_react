@@ -103,7 +103,7 @@ export function NetworkContainer() {
         <div className="container">
             <br/>
             <form onSubmit={handleAddNetwork} >
-                <div className="input-group flex-nowrap">
+                <div className="field input-group flex-nowrap mb-3">
                     <div className="input-group-prepend">
                         <label className="input-group-text" htmlFor="inputGroupSelect01">Name</label>
                     </div>

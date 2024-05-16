@@ -103,7 +103,7 @@ export function SchoolContainer() {
         <div className="container">
             <br/>
             <form onSubmit={handleAddSchool} >
-                <div className="input-group flex-nowrap">
+                <div className="field input-group flex-nowrap mb-3">
                     <div className="input-group-prepend">
                         <label className="input-group-text" htmlFor="schoolName">Name</label>
                     </div>
