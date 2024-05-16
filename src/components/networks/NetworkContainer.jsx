@@ -143,7 +143,7 @@ export function NetworkContainer() {
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>A ID</th>
+                        <th>Account</th>
                         <th colSpan="4"></th>
                     </tr>
                 </thead>

@@ -15,6 +15,9 @@ export default function App() {
                     (<AccountDetails key={currentAccount.id} account={currentAccount} setAccounts={setAccountsData} />)
                 ) } */}
                 <Header />
+                <div>
+                    Home Page
+                </div>
                 <Outlet />
             </div>
         </>
