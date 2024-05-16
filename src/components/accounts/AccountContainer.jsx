@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { userApiUrl } from "../../utils/contexts/accountsContext";
-// import { useFetchAccounts } from "../utils/hooks/accounts/useFetchAccounts";
+import { userApiUrl } from "../../main";
 
 export function AccountContainer() {
     
@@ -12,7 +11,7 @@ export function AccountContainer() {
 
     const fetchAccounts = async () => {
         try {
-            const response = await fetch(userApiUrl);
+            const response = await fetch(`${userApiUrl}/accounts`);
             const data = await response.json();
             setAccountsContextData(data);
         } catch (error) {
@@ -26,7 +25,7 @@ export function AccountContainer() {
 
     const handleDeleteClick = async (accountId) => {
         try {
-            await fetch(`${userApiUrl}/${accountId}`, {
+            await fetch(`${userApiUrl}/accounts/${accountId}`, {
                 method: "DELETE",
             });
             console.log("Delete successful");
@@ -43,7 +42,7 @@ export function AccountContainer() {
     };
 
     const handleSaveClick = (accountId) => {
-        fetch(`${userApiUrl}/${accountId}`, {
+        fetch(`${userApiUrl}/accounts/${accountId}`, {
             method: "PUT",
             headers: { 'Content-Type': 'application/json; charset=UTF-8' },
             body: JSON.stringify({ name: accountName }),
@@ -63,7 +62,7 @@ export function AccountContainer() {
         e.preventDefault();
         if (name) {
             try {
-                const response = await fetch(userApiUrl, {
+                const response = await fetch(`${userApiUrl}/accounts`, {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
