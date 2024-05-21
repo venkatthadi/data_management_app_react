@@ -7,7 +7,7 @@ export function LoginContainer() {
     
     const [ username, setUsername ] = useState("");
     const [ password, setPassword ] = useState("");
-    const { isAuth, token, login } = useAuth();
+    const { token, login } = useAuth();
     const navigate = useNavigate();
 
     const fetchAuth = async (user, pass) => {

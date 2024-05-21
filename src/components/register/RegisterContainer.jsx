@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { userApiUrl } from "../../main";
-
+import { useNavigate } from "react-router-dom";
 
 export function RegisterContainer() {
     
     const [ username, setUsername ] = useState("");
     const [ password, setPassword ] = useState("");
+    const navigate = useNavigate();
 
     const createAuth = async (user, pass) => {
         try {
@@ -18,6 +19,7 @@ export function RegisterContainer() {
             })
             const data = await auth.json();
             alert(`${data.message}. Login to continue...`)
+            navigate('/login');
             // console.log(data);
         } catch(err) {
             console.log(err);
