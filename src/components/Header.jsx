@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { TokenContext } from "../utils/contexts/authContext";
+import { useAuth } from "../utils/contexts/authContext";
 
 export function Header() {
 
-    const { isAuth, setIsAuth, token, setToken } = useContext(TokenContext);
+    const { isAuth, token, login, logout } = useAuth();
+
+    const handleLogout = () => {
+        logout();
+    };
 
     return(
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -32,9 +36,16 @@ export function Header() {
             </div>
             <div className="navbar" id="navbarSupportedContent">
                 <ul className="nav navbar-nav navbar-right">
-                    <li className="nav-item">
-                        <Link to="/login" className="nav-link">Login</Link>
-                    </li>
+                    { !isAuth && (
+                        <li className="nav-item">
+                            <Link to="/login" className="nav-link">Login</Link>
+                        </li>
+                    )}
+                    { isAuth && (
+                        <li className="nav-item">
+                            <a href="/" className="nav-link" onClick={handleLogout}>Logout</a>
+                        </li>
+                    )}
                     <li className="nav-item">
                         <Link to="/register" className="nav-link">Register</Link>
                     </li>
