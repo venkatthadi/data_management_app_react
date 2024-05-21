@@ -13,7 +13,12 @@ export function NetworkContainer() {
 
     const fetchNetworks = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/networks`);
+            const response = await fetch(`${userApiUrl}/networks`, {
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+            });
             const data = await response.json();
             setNetworksContextData(data);
         } catch (error) {
@@ -23,7 +28,12 @@ export function NetworkContainer() {
 
     const fetchAccounts = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/accounts`);
+            const response = await fetch(`${userApiUrl}/accounts`, {
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+            });
             const data = await response.json();
             setAccountsContextData(data);
         } catch (error) {
@@ -40,6 +50,10 @@ export function NetworkContainer() {
         try {
             await fetch(`${userApiUrl}/networks/${networkId}`, {
                 method: "DELETE",
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
             });
             console.log("Delete successful");
             fetchNetworks();
@@ -57,7 +71,10 @@ export function NetworkContainer() {
     const handleSaveClick = (networkId) => {
         fetch(`${userApiUrl}/networks/${networkId}`, {
             method: "PUT",
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            headers: { 
+                'Content-Type': 'application/json; charset=UTF-8',
+                'authorization': 'Bearer ' + localStorage.getItem("token"),
+            },
             body: JSON.stringify({ name: editingName, accountId: editingAccountId }),
         })
         .then((response) => response.json())
@@ -78,8 +95,9 @@ export function NetworkContainer() {
             try {
                 const response = await fetch(`${userApiUrl}/networks`, {
                     method: "POST",
-                    headers: {
+                    headers: { 
                         'Content-Type': 'application/json; charset=UTF-8',
+                        'authorization': 'Bearer ' + localStorage.getItem("token"),
                     },
                     body: JSON.stringify({ name, accountId: aid }),
                 });

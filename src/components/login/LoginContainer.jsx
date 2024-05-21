@@ -1,13 +1,14 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { userApiUrl } from "../../main";
-import { TokenContext } from "../../utils/contexts/authContext";
+import { useAuth } from "../../utils/contexts/authContext";
 
 export function LoginContainer() {
-
-    const { isAuth, setIsAuth, token, setToken } = useContext(TokenContext);
     
     const [ username, setUsername ] = useState("");
     const [ password, setPassword ] = useState("");
+    const { isAuth, token, login } = useAuth();
+    const navigate = useNavigate();
 
     const fetchAuth = async (user, pass) => {
         try {
@@ -21,14 +22,12 @@ export function LoginContainer() {
             const data = await auth.json();
             alert(`${data.message}`)
             if(data.accessToken){
-                setToken(data.accessToken);
+                login(data.accessToken);
                 console.log(`Token: ${token}`);
-                setIsAuth(true);
+                navigate('/');
             }
-            // console.log(data.accessToken);
         } catch(err) {
             console.log(err);
-            setIsAuth(false);
         }
     }
 
@@ -68,7 +67,8 @@ export function LoginContainer() {
                 <button
                     className="btn btn-secondary"
                     onClick={() => {
-                        fetchAuth(username, password)
+                        fetchAuth(username, password);
+
                     }}
                 >
                     Log In

@@ -11,7 +11,12 @@ export function UserTypeContainer() {
 
     const fetchUserTypes = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/usertypes`);
+            const response = await fetch(`${userApiUrl}/usertypes`, {
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+            });
             const data = await response.json();
             setUserTypesContextData(data);
         } catch (error) {
@@ -27,6 +32,10 @@ export function UserTypeContainer() {
         try {
             await fetch(`${userApiUrl}/usertypes/${userTypeId}`, {
                 method: "DELETE",
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
             });
             console.log("Delete successful");
             fetchUserTypes();
@@ -44,7 +53,10 @@ export function UserTypeContainer() {
     const handleSaveClick = (userTypeId) => {
         fetch(`${userApiUrl}/usertypes/${userTypeId}`, {
             method: "PUT",
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            headers: { 
+                'Content-Type': 'application/json; charset=UTF-8',
+                'authorization': 'Bearer ' + localStorage.getItem("token"),
+            },
             body: JSON.stringify({ name: userTypeName }),
         })
         .then((response) => response.json())
@@ -65,8 +77,9 @@ export function UserTypeContainer() {
             try {
                 const response = await fetch(`${userApiUrl}/usertypes`, {
                     method: "POST",
-                    headers: {
+                    headers: { 
                         'Content-Type': 'application/json; charset=UTF-8',
+                        'authorization': 'Bearer ' + localStorage.getItem("token"),
                     },
                     body: JSON.stringify({ name }),
                 });

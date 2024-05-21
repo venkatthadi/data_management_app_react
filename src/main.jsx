@@ -12,6 +12,8 @@ import { UsersPage } from './pages/users';
 import { LoginPage } from './pages/login';
 import { RegisterPage } from './pages/register';
 
+import { AuthProvider } from './utils/contexts/authContext';
+
 export const userApiUrl = "http://127.0.0.1:5001";
 
 const router = createBrowserRouter([
@@ -58,6 +60,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     // <React.StrictMode>
+    <AuthProvider>
         <RouterProvider router={router}/>
+    </AuthProvider>
     // </React.StrictMode>
 );

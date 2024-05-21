@@ -11,7 +11,11 @@ export function AccountContainer() {
 
     const fetchAccounts = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/accounts`);
+            const response = await fetch(`${userApiUrl}/accounts`, {
+                headers: {
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                }
+            });
             const data = await response.json();
             setAccountsContextData(data);
         } catch (error) {
@@ -27,6 +31,9 @@ export function AccountContainer() {
         try {
             await fetch(`${userApiUrl}/accounts/${accountId}`, {
                 method: "DELETE",
+                headers: {
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                }
             });
             console.log("Delete successful");
             fetchAccounts();
@@ -44,7 +51,10 @@ export function AccountContainer() {
     const handleSaveClick = (accountId) => {
         fetch(`${userApiUrl}/accounts/${accountId}`, {
             method: "PUT",
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            headers: { 
+                'Content-Type': 'application/json; charset=UTF-8',
+                'authorization': 'Bearer ' + localStorage.getItem("token"),
+            },
             body: JSON.stringify({ name: accountName }),
         })
         .then((response) => response.json())
@@ -66,6 +76,7 @@ export function AccountContainer() {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
+                        'authorization': 'Bearer ' + localStorage.getItem("token"),
                     },
                     body: JSON.stringify({ name }),
                 });

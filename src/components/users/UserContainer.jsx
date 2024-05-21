@@ -16,7 +16,12 @@ export function UserContainer() {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/users`);
+            const response = await fetch(`${userApiUrl}/users`, {
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+            });
             const data = await response.json();
             setUsersContextData(data);
         } catch (error) {
@@ -26,7 +31,12 @@ export function UserContainer() {
 
     const fetchSchools = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/schools`);
+            const response = await fetch(`${userApiUrl}/schools`, {
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+            });
             const data = await response.json();
             setSchoolsContextData(data);
         } catch (error) {
@@ -36,7 +46,12 @@ export function UserContainer() {
 
     const fetchUserTypes = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/usertypes`);
+            const response = await fetch(`${userApiUrl}/usertypes`, {
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+            });
             const data = await response.json();
             setUserTypesContextData(data);
         } catch (error) {
@@ -54,6 +69,10 @@ export function UserContainer() {
         try {
             await fetch(`${userApiUrl}/users/${userId}`, {
                 method: "DELETE",
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
             });
             console.log("Delete successful");
             fetchUsers();
@@ -72,7 +91,10 @@ export function UserContainer() {
     const handleSaveClick = (userId) => {
         fetch(`${userApiUrl}/users/${userId}`, {
             method: "PUT",
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            headers: { 
+                'Content-Type': 'application/json; charset=UTF-8',
+                'authorization': 'Bearer ' + localStorage.getItem("token"),
+            },
             body: JSON.stringify({ name: editingName, schoolId: editingSchoolId, usertypeId: editingUsertypeId }),
         })
         .then((response) => response.json())
@@ -94,8 +116,9 @@ export function UserContainer() {
             try {
                 const response = await fetch(`${userApiUrl}/users`, {
                     method: "POST",
-                    headers: {
+                    headers: { 
                         'Content-Type': 'application/json; charset=UTF-8',
+                        'authorization': 'Bearer ' + localStorage.getItem("token"),
                     },
                     body: JSON.stringify({ name, schoolId, usertypeId }),
                 });

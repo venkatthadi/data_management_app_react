@@ -13,7 +13,12 @@ export function SchoolContainer() {
 
     const fetchSchools = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/schools`);
+            const response = await fetch(`${userApiUrl}/schools`, {
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+            });
             const data = await response.json();
             setSchoolsContextData(data);
         } catch (error) {
@@ -23,7 +28,12 @@ export function SchoolContainer() {
 
     const fetchNetworks = async () => {
         try {
-            const response = await fetch(`${userApiUrl}/networks`);
+            const response = await fetch(`${userApiUrl}/networks`, {
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+            });
             const data = await response.json();
             setNetworksContextData(data);
         } catch (error) {
@@ -40,6 +50,10 @@ export function SchoolContainer() {
         try {
             await fetch(`${userApiUrl}/schools/${schoolId}`, {
                 method: "DELETE",
+                headers: { 
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
             });
             console.log("Delete successful");
             fetchSchools();
@@ -57,7 +71,10 @@ export function SchoolContainer() {
     const handleSaveClick = (schoolId) => {
         fetch(`${userApiUrl}/schools/${schoolId}`, {
             method: "PUT",
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            headers: { 
+                'Content-Type': 'application/json; charset=UTF-8',
+                'authorization': 'Bearer ' + localStorage.getItem("token"),
+            },
             body: JSON.stringify({ name: editingName, networkId: editingNetworkId }),
         })
         .then((response) => response.json())
@@ -78,8 +95,9 @@ export function SchoolContainer() {
             try {
                 const response = await fetch(`${userApiUrl}/schools`, {
                     method: "POST",
-                    headers: {
+                    headers: { 
                         'Content-Type': 'application/json; charset=UTF-8',
+                        'authorization': 'Bearer ' + localStorage.getItem("token"),
                     },
                     body: JSON.stringify({ name, networkId }),
                 });
