@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { userApiUrl } from "../../main";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../utils/contexts/authContext";
 
 export function SchoolContainer() {
 
@@ -10,6 +12,8 @@ export function SchoolContainer() {
     const [editingSchoolId, setEditingSchoolId] = useState(null);
     const [editingName, setEditingName] = useState('');
     const [editingNetworkId, setEditingNetworkId] = useState(0);
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const fetchSchools = async () => {
         try {
@@ -21,6 +25,11 @@ export function SchoolContainer() {
             });
             const data = await response.json();
             setSchoolsContextData(data);
+            if(data.message === "jwt expired"){
+                alert("Token expired. Login again..");
+                logout();
+                navigate('/login');
+            }
         } catch (error) {
             console.error("Error fetching schools data:", error);
         }

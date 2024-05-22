@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { userApiUrl } from "../../main";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../utils/contexts/authContext";
 
 export function NetworkContainer() {
     
@@ -10,6 +12,8 @@ export function NetworkContainer() {
     const [editingNetworkId, setEditingNetworkId] = useState(null);
     const [editingName, setEditingName] = useState('');
     const [editingAccountId, setEditingAccountId] = useState(0);
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const fetchNetworks = async () => {
         try {
@@ -21,6 +25,11 @@ export function NetworkContainer() {
             });
             const data = await response.json();
             setNetworksContextData(data);
+            if(data.message === "jwt expired"){
+                alert("Token expired. Login again..");
+                logout();
+                navigate('/login');
+            }
         } catch (error) {
             console.error("Error fetching networks data:", error);
         }

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { userApiUrl } from "../../main";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../utils/contexts/authContext";
 
 export function UserTypeContainer() {
     
@@ -8,6 +10,8 @@ export function UserTypeContainer() {
     const [editingUserTypeId, setEditingUserTypeId] = useState(null);
     const [editingField, setEditingField] = useState('');
     const [userTypeName, setUserTypeName] = useState('');
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const fetchUserTypes = async () => {
         try {
@@ -19,6 +23,11 @@ export function UserTypeContainer() {
             });
             const data = await response.json();
             setUserTypesContextData(data);
+            if(data.message === "jwt expired"){
+                alert("Token expired. Login again..");
+                logout();
+                navigate('/login');
+            }
         } catch (error) {
             console.error("Error fetching user types data:", error);
         }

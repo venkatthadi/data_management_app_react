@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { userApiUrl } from "../../main";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../utils/contexts/authContext";
 
 export function AccountContainer() {
     
@@ -8,6 +10,8 @@ export function AccountContainer() {
     const [ editingAccountId, setEditingAccountId ] = useState(null);
     const [ editingField, setEditingField ] = useState('');
     const [ accountName, setAccountName ] = useState('');
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const fetchAccounts = async () => {
         try {
@@ -18,6 +22,11 @@ export function AccountContainer() {
             });
             const data = await response.json();
             setAccountsContextData(data);
+            if(data.message === "jwt expired"){
+                alert("Token expired. Login again..");
+                logout();
+                navigate('/login');
+            }
         } catch (error) {
             console.error("Error fetching accounts data:", error);
         }
@@ -81,7 +90,7 @@ export function AccountContainer() {
                     body: JSON.stringify({ name }),
                 });
                 const data = await response.json();
-                console.log("Success", data);
+                // console.log("Success", data);
                 fetchAccounts();
                 setName("");
             } catch (err) {
@@ -93,6 +102,7 @@ export function AccountContainer() {
     return(
         <div className="container">
             <br/>
+            {}
             <form onSubmit={handleAddAccount}>
                 <div className="input-group flex-nowrap">
                     <div className="input-group-prepend">

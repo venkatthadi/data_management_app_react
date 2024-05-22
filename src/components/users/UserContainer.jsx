@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { userApiUrl } from "../../main";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../utils/contexts/authContext";
 
 export function UserContainer() {
 
@@ -13,6 +15,8 @@ export function UserContainer() {
     const [editingName, setEditingName] = useState('');
     const [editingSchoolId, setEditingSchoolId] = useState(0);
     const [editingUsertypeId, setEditingUsertypeId] = useState(0);
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const fetchUsers = async () => {
         try {
@@ -24,6 +28,11 @@ export function UserContainer() {
             });
             const data = await response.json();
             setUsersContextData(data);
+            if(data.message === "jwt expired"){
+                alert("Token expired. Login again..");
+                logout();
+                navigate('/login');
+            }
         } catch (error) {
             console.error("Error fetching users data:", error);
         }
